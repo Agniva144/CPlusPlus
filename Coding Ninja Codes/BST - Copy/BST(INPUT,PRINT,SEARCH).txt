@@ -1,0 +1,242 @@
+#include <iostream>
+#include <queue>
+#include <stack>
+#include "BinaryTreeNode.h"
+using namespace std;
+
+BinaryTreeNode<int> *takeinputLevelWise()   //be careful for BST input (root matters)
+{
+    int rootData;
+    cout << "Enter Root Data" << endl;
+    cin >> rootData;
+    if (rootData == -1)
+    { //-1 still a indicator that it has no children.
+        return NULL;
+    }
+
+    BinaryTreeNode<int> *root = new BinaryTreeNode<int>(rootData);
+
+    queue<BinaryTreeNode<int> *> pendingNodes; // queue for pending nodes
+    pendingNodes.push(root);                   // pushing first root as pending nodes.
+
+    while (pendingNodes.size() != 0)
+    { // until and unless the queue is empty , we should traverse implying there are nodes left to explore.
+
+        BinaryTreeNode<int> *front = pendingNodes.front(); // keeping the front before poping
+        pendingNodes.pop();                                // poping the front element.
+
+        // left child
+        cout << "Enter left child of " << front->data << endl;
+        int leftChildData;
+        cin >> leftChildData;
+        if (leftChildData != -1)
+        {
+            BinaryTreeNode<int> *child = new BinaryTreeNode<int>(leftChildData);
+            front->left = child;
+            pendingNodes.push(child); // pushing into the queue(left child)
+        }
+
+        // right child
+        cout << "Enter right child of " << front->data << endl;
+        int rightChildData;
+        cin >> rightChildData;
+        if (rightChildData != -1)
+        {
+            BinaryTreeNode<int> *child = new BinaryTreeNode<int>(rightChildData);
+            front->right = child;
+            pendingNodes.push(child); // pushing into the queue(right child)
+        }
+    }
+    return root; // returning the root
+}
+
+void PrintLevelWise(BinaryTreeNode<int> *root)
+{
+
+    queue<BinaryTreeNode<int> *> pendingNodes;
+    pendingNodes.push(root);
+
+    while (pendingNodes.size() != 0)
+    {
+        BinaryTreeNode<int> *front = pendingNodes.front();
+        pendingNodes.pop();
+
+        cout << front->data << " : ";
+
+        // Left
+        if (front->left != NULL)
+        {
+            cout << "L->";
+            cout << front->left->data;
+            pendingNodes.push(front->left);
+        }
+
+        // Right
+        if (front->right != NULL)
+        {
+            cout << ",R->";
+            cout << front->right->data;
+            pendingNodes.push(front->right);
+        }
+
+        cout << endl;
+    }
+}
+
+
+BinaryTreeNode<int>* searchBST(BinaryTreeNode<int>* root,int key){
+    if(root==NULL){
+        return NULL;
+    }
+    if(root->data==key){
+        return root;
+    }
+    else if(root->data>key){
+        return searchBST(root->left,key);
+    }else{
+        return searchBST(root->right,key);
+    }
+}
+
+void PrintElementsInRange(BinaryTreeNode<int>* root,int low,int high){
+    if(root==NULL){
+        return ;
+    }
+
+   if ( low < root->data )
+		PrintElementsInRange(root->left, low, high);
+	
+	/* if root's data lies in range,
+	then prints root's data */
+	if ( low <= root->data && high >= root->data )
+		cout<<root->data<<" ";
+	
+	/* recursively call the right subtree */
+    PrintElementsInRange(root->right, low, high);
+}
+
+//check BST-I
+int minimum(BinaryTreeNode<int>* root){
+    if(root==NULL){
+        return INT_MAX; //for getting min value set it to highest possible value.
+    }
+
+    return min(root->data,min(minimum(root->left),minimum(root->right)));
+}
+
+int maximum(BinaryTreeNode<int>* root){
+    if(root==NULL){
+        return INT_MIN; //for getting max intially set max to lowest possible value of INT_MIN.
+    }
+    return max(root->data,max(maximum(root->left),maximum(root->right)));   //comparing the root.data , left subtree and right subtree.
+}
+
+bool isBST(BinaryTreeNode<int>* root){
+    if(root==NULL){
+        return true;
+    }
+    
+    int leftMax=maximum(root->left);
+    int rightMin=minimum(root->left);
+
+    bool output=(root->data>leftMax)    //the max of left should be smaller than the root.
+                    &&
+                (root->data<=rightMin)  //the min of right should be greater than the root.
+                    && 
+                isBST(root->left)       //isBST for left
+                    &&
+                isBST(root->right);     //is BST for right
+    return output;
+}
+//complexity-O(n^2)
+
+
+//O(n) better approach 
+class IsBSTReturn{
+    public:
+        bool isBST;
+        int minimum;
+        int maximum;    
+};
+
+IsBSTReturn isBST2(BinaryTreeNode<int>* root){
+    if(root==NULL){
+        IsBSTReturn output;
+        output.isBST=true;
+        output.minimum=INT_MAX;
+        output.maximum=INT_MIN;
+
+        return output;
+    }
+
+
+    IsBSTReturn leftOuput=isBST2(root->left);
+    IsBSTReturn rightOutput=isBST2(root->right);
+
+
+    int minimum=min(root->data,min(leftOuput.minimum,rightOutput.minimum));
+    int maximum=max(root->data,max(leftOuput.maximum,rightOutput.maximum));
+    bool isBSTFinal=(root->data>leftOuput.maximum) && (root->data<=rightOutput.minimum) && leftOuput.isBST && rightOutput.isBST;
+
+
+    IsBSTReturn output;
+    output.minimum=minimum;
+    output.maximum=maximum;
+    output.isBST=isBSTFinal;
+    
+    return output;
+}
+
+bool isBST3(BinaryTreeNode<int>* root,int min=INT_MIN,int max=INT_MAX){
+    if(root==NULL){
+        return true;
+    }
+
+    if(root->data<min || root->data>max){       //compatible condition is: (min>root.data>max)
+        return false;
+    }
+
+    bool isLeftOk=isBST3(root->left,min,root->data-1);   // left range should be (min,root.data-1)
+    bool isRightOk=isBST3(root->right,root->data,max);
+
+    return isLeftOk && isRightOk;
+}
+
+BinaryTreeNode<int>* ConstructBST(int arr[],int si,int ei){
+
+    int mid=(si+ei)/2;
+    if(si>ei){
+        return NULL;
+    }
+    int mid_element=arr[mid];
+    BinaryTreeNode<int>* root=new BinaryTreeNode<int>(mid_element);
+    BinaryTreeNode<int>* left=ConstructBST(arr,si,mid-1);
+    BinaryTreeNode<int>* right=ConstructBST(arr,mid+1,ei);
+
+    root->left=left;
+    root->right=right;
+
+    return root;
+
+}
+
+// void print(int arr[]){
+//     for(int i=0;i<4;i++){
+//         cout<<arr[i]<<" ";
+//     }
+//     cout<<endl;
+// }
+
+int main(){
+    // BinaryTreeNode<int>* root=takeinputLevelWise();
+    int arr[]={1,2,3,4,5,6,7};
+    BinaryTreeNode<int>* root=ConstructBST(arr,0,6);
+
+    // BinaryTreeNode<int>* ans=searchBST(root,7);
+    // cout<<ans->data<<endl;
+
+    // PrintElementsInRange(root,20,50);
+    print(arr);
+    PrintLevelWise(root);
+    // cout<<isBST(root)<<endl;
+}
