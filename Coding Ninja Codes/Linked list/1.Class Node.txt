@@ -1,0 +1,41 @@
+	Node.cpp
+	--------	
+
+#include<iostream>
+using namespace std;
+
+class Node{
+    public:
+    int data;
+    Node *next;
+
+    Node(int data){
+        this->data=data;
+        this->next=NULL;
+    }
+};
+
+
+
+	linked.cpp
+	----------
+
+
+#include<iostream>
+using namespace std;
+#include "node.cpp"
+
+int main(){
+    //statical class
+    Node n1(1);
+    Node *head=&n1;//storing the address of n1(head)
+
+    Node n2(2);
+
+    n1.next=&n2;//connecting nodes
+
+    cout<<n1.data<<" "<<n2.data<<endl; 
+
+    cout<<head->data;//getting the value of n1 using pointer also using arrow(->) to dereference a pointer variable.
+
+}

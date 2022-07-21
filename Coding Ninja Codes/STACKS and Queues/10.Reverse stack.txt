@@ -1,0 +1,51 @@
+#include<iostream>
+#include<stack>
+using namespace std;
+
+
+void copy_stack(stack<int> &s2,stack<int> &s,int item){
+	if(s2.empty()){
+		return;
+	}
+	
+	int item2=s2.top();		//accesing the last element first and then adding elements subsequently into the stack
+	s2.pop();
+	copy_stack(s2,s,item2);
+	
+	s.push(item2);	//pushing goin here , last element gone first
+}
+
+void reverse_stack(stack<int> &s,stack<int> &s2){
+	if(s.empty()){
+		return ;
+	}
+	int item=s.top();
+	// cout<<item<<"s1 poping "<<endl;
+	s2.push(item);
+	// cout<<"s2 top-> "<<s2.top()<<endl;
+	// insert_bottom(s2,s.top());
+	s.pop();
+	reverse_stack(s,s2);
+}
+
+
+int main(){
+
+	stack<int> s;//primary stack
+	stack<int> s2;	//sample stack for help
+	s.push(1);
+	s.push(2);
+	s.push(3);
+	s.push(4);
+	s.push(5);
+	reverse_stack(s,s2);
+	
+	copy_stack(s2,s,s2.top());
+	
+	cout<<s.size()<<endl;
+	while(!s.empty()){
+		cout<<s.top()<<endl;
+		s.pop();
+	}
+
+}

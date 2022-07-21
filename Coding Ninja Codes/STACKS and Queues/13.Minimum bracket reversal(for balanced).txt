@@ -1,0 +1,58 @@
+#include<iostream>
+using namespace std;
+#include<stack>
+
+int min_bracket_reversal(string str){
+	stack<char> s;
+	int cnt=0;
+	for(int i=0;i<str.length();i++){
+		// cout<<"str-> "<<str[i]<<endl;
+		if(str[i]=='{'){	//opening bracket condition (normal push)
+			s.push(str[i]);
+			//cout<<"pushing {"<<endl;
+		}
+		if(str[i]=='}'){	//closing bracket condtion (check)
+			if(s.empty()){
+				s.push(str[i]);
+				// cout<<"hitting the first conditon"<<endl;
+			}
+			else if(!s.empty() && s.top()=='{'){
+				s.pop();
+				// cout<<"Hitting the second conditon"<<endl;
+			}
+			else if(!s.empty() && s.top()!='{'){
+				s.push(str[i]);
+				// cout<<"third"<<endl;
+			}
+		}
+		// cout<<endl;
+	}
+
+	//pop out the first two element two check
+	
+
+	while(!s.empty()){		//left over elements on stack are those unbalanced brackets.
+		char c1=s.top();
+		s.pop();
+		char c2=s.top();
+		s.pop();
+		if(c1==c2){
+			cnt++;
+		}else{
+			cnt+=2;
+		}
+	}
+	
+
+	// while(!s.empty()){
+	// 	cout<<s.top()<<" ";
+	// 	s.pop();
+	// }
+
+	return cnt;
+}
+
+int main(){
+	string str="{{}}{{{{";
+	cout<<min_bracket_reversal(str);
+}

@@ -1,0 +1,89 @@
+template <typename T> 
+class QueueUAR{
+    T *data;
+    int nextIndex;
+    int firstIndex;
+    int size;
+    int capacity;
+
+    public:
+    QueueUAR(int s){
+        data=new T[s];
+        nextIndex=0;
+        firstIndex=-1;
+        size=0;
+        capacity=s;
+    }
+
+    int getSize(){
+        return size;
+    }
+
+    bool isEmpty(){
+        return size==0;
+    }
+
+    //insert element
+    void enqueue(T element){
+
+        if(size==capacity){
+            /*
+            cout<<"Queue is Full"<<endl;
+            return;
+            */
+           T *newData=new T[2*capacity];
+           int j=0; //iterate over newData
+            
+            //first part
+           for(int i=firstIndex;i<capacity;i++){
+            newData[j]=data[i];
+            j++;
+           }
+
+            //second part
+           for(int i=0;i<firstIndex;i++){
+            newData[j]=data[i];
+            j++;
+           }
+
+           delete [] data;
+           data=newData;
+           firstIndex=0;
+           nextIndex=capacity;
+           capacity*=2;
+
+        }
+
+        data[nextIndex]=element;
+        nextIndex=(nextIndex+1)%capacity;   //moving it circularly      //it is working like a stack the moment I wrote front_index=(front_index+1)%capacity;
+
+        if(firstIndex==-1){ //first element insertion 
+            firstIndex=0;
+        }
+
+        size++; 
+    }
+
+    T front(){
+        if(isEmpty()){  //in case firstIndex is -1
+            cout<<"Queue is Empty"<<endl;
+            return 0;
+        }
+        return data[firstIndex];
+    }
+
+    T dequeue(){
+        if(isEmpty()){
+            cout<<"Queue is Empty"<<endl;
+            return 0;
+        }
+        T ans=data[firstIndex];
+        firstIndex=(firstIndex+1)%capacity; //moving it circularly.
+        size--;
+        if(size==0){    //just when our queue got empty we are setting this values as default.
+            firstIndex=-1;
+            nextIndex=0;
+        }
+        return ans;
+    }
+};

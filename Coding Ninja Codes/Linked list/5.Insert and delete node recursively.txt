@@ -1,0 +1,152 @@
+#include<iostream>
+using namespace std;
+#include "node.cpp"
+
+int count(Node* head){    //count length of linked list using recursion
+    if(head==NULL){     //base case
+        return 0;
+    }
+
+    //count 1+remaining list
+    return 1+count(head->next);
+}
+
+Node* delete_Node_rec(Node* head,int position){
+    if(head==NULL){
+        return NULL;
+    }
+    if(position==0){
+        Node* res=head->next;
+        delete(head);
+        return res;
+    }
+    head->next=delete_Node_rec(head->next,position-1);
+    return head;
+}
+
+Node* takeinput(){
+    int data;
+    cin>>data;
+
+    Node *head=NULL;
+    Node *tail=NULL;
+    while(data!=-1){
+        Node *newNode=new Node(data);
+        if(head==NULL){  //first element insertion
+            head=newNode;
+            tail=newNode;
+        }else{
+            tail->next=newNode;
+            tail=tail->next;
+        }
+        cin>>data;
+    }
+    return head;
+}
+
+Node* insert_Node_recursively(Node* head,int data,int position){
+
+    //Inserting on the first node.
+    if(position==0){
+        Node* newNode=new Node(data);
+        newNode->next=head;
+        head=newNode;
+        return head;
+    }
+
+    
+
+    if((head->next==NULL && position==0) /*for adding on the end of the list */   || position==1  /*Inserting on node in between */){
+            Node* newNode=new Node(data);
+            newNode->next=head->next;
+            head->next=newNode;
+            return head;
+    }
+    //in case the position exceeds the total number of nodes
+    if(head->next==NULL && position>0){
+        return head;
+    }
+    else{
+        head->next=insert_Node_recursively(head->next,data,position-1);
+    }
+
+    return head;    
+}
+
+Node* delete_Node(Node* head,int posn){
+    Node* temp=head;
+    if(posn==0){    //delete on first position
+        head=head->next;
+        free(temp);
+        return head;
+    }else{
+        for(int i=0;i<posn-1 && temp!=NULL;i++){
+            temp=temp->next;        //iterate upto that node
+        }
+
+        if(temp==NULL || temp->next==NULL/* for deleting the node next to the last node */){
+            return head;    //in case node number exceeds out of number
+        }
+        Node* del=temp->next;
+        Node* a=temp->next;
+        Node *b=a->next;
+
+        temp->next=b;
+        free(del);
+        return head;
+    }
+}
+
+void print(Node *head){
+    Node *temp=head;    //never loose the value of head pointer.
+    
+    while(temp!=NULL){
+         cout<<temp->data<<" ";
+         temp=temp->next;
+     }
+
+     cout<<endl;
+}
+
+int main(){
+    //statical class
+    //Node n1(1);
+    //Node *head=&n1;//storing the address of n1(head)
+
+    //Node n2(2);
+
+    /*
+    n1.next=&n2;//connecting nodes
+
+    cout<<n1.data<<" "<<n2.data<<endl; 
+
+    cout<<head->data;//getting the value of n1 using pointer also using arrow(->) to dereference a pointer variable.
+
+
+    //Dynamically
+    Node *n3=new Node(10);
+    Node *head=n3;//storing the head; 
+    Node *n4=new Node(20);
+    n3->next=n4;//connecting nodes
+    */
+
+   //Node n3(3);
+   //Node n4(4);
+   //Node n5(5);
+
+
+   //connecting nodes
+   //n1.next=&n2;
+   //n2.next=&n3;
+   //n3.next=&n4;
+   //n4.next=&n5;
+
+   //print(head);
+   //print(head);//will get printed out twice as the head pointer's value got passed and it remains unchanged in main fuction .
+    
+    Node *head=takeinput();
+    print(head);
+    
+    head=delete_Node_rec(head,3);
+    print(head);
+}

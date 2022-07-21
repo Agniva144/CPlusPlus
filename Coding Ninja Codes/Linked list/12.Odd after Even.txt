@@ -1,0 +1,120 @@
+#include<iostream>
+using namespace std;
+
+class Node{
+    public:
+        int data;
+        Node* next;
+    Node(int data){
+        this->data=data;
+        this->next=NULL;
+    }
+};
+
+Node* odd_after_even(Node* head){
+    Node* temp=head;
+    if(head==NULL){
+        return NULL;
+    }
+    Node* odd_head=NULL;
+    Node* odd_tail=NULL;
+
+    Node* even_head=NULL;
+    Node* even_tail=NULL;
+
+    while(temp!=NULL){
+        if(temp->data%2==0){    //even
+        Node* new_node=new Node(temp->data);
+            if(even_head==NULL){
+                even_head=new_node;
+                even_tail=new_node;
+            }
+            else{
+                even_tail->next=new_node;
+                even_tail=new_node;
+            }
+        }
+        else{                   //odd
+            Node* new_node=new Node(temp->data);
+            if(odd_head==NULL){
+                odd_head=new_node;
+                odd_tail=new_node;
+            }
+            else{
+                odd_tail->next=new_node;
+                odd_tail=new_node;
+            }
+        }
+        temp=temp->next;
+    }
+    if(odd_tail==NULL){         //no odd elements
+        return even_head;
+    }
+    else if(even_tail==NULL){       //no even elements
+        return odd_head;
+    }
+
+    odd_tail->next=even_head;
+    return odd_head;
+
+}
+
+Node* takeinput(){
+    int data;
+    cin>>data;
+
+    Node* head=NULL;
+    Node* tail=NULL;
+    while(data!=-1){
+        Node* newNode=new Node(data);
+        if(head==NULL){
+            head=newNode;
+            tail=newNode;
+        }
+        else{
+            tail->next=newNode;
+            tail=tail->next;
+        }
+        cin>>data;
+    }
+    return head;
+}
+
+void print(Node* head){
+    if(head==NULL){
+        return;
+    }
+    Node* temp=head;
+    while(temp!=NULL){
+        cout<<temp->data<<" ";
+        temp=temp->next;
+    }
+    cout<<endl;
+}
+
+int count(Node* head){
+    if(head==NULL){
+        return 0;
+    }
+    int cnt=0;
+    Node* temp=head;
+    while(temp!=NULL){
+        temp=temp->next;
+        cnt++;
+    }
+    return cnt;
+}
+
+int main(){
+
+    Node* h1=takeinput();
+    print(h1);
+    // int cnt=count(h1);
+    // cout<<cnt<<endl;
+    // h1=append_last_n_node(h1,3,cnt);
+    // print(h1);
+
+    h1=odd_after_even(h1);
+    print(h1);
+
+}

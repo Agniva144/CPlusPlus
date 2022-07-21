@@ -1,0 +1,99 @@
+#include<iostream>
+using namespace std;
+
+class Node{
+    public:
+    int data;
+    Node* next;
+    Node(int data){
+        this->data=data;
+        this->next=NULL;
+    }
+};
+
+Node* takeinput(){
+    int data;
+    cin>>data;
+
+    Node* head=NULL;
+    Node* tail=NULL;
+
+    while(data!=-1){
+        Node* newNode=new Node(data);
+        if(head==NULL){
+            head=newNode;
+            tail=newNode;
+        }
+        else{
+            tail->next=newNode;
+            tail=tail->next;
+        }
+        cin>>data;
+    }
+    return head;
+}
+
+void print(Node* head){
+    Node* temp=head;
+    while(temp!=NULL){
+        cout<<temp->data<<" ";
+        temp=temp->next;
+    }
+    cout<<endl;
+}
+
+//K reverse for reversing the linked for k elements.
+Node* k_reverse(Node* head,int k){
+    int cnt=0;
+
+    Node* cur=head;
+    Node* prev=NULL;
+    Node* next=head->next;
+
+    while(cnt<k && cur!=NULL){
+        next=cur->next;
+        cur->next=prev;
+        prev=cur;
+        cur=next;
+        cnt++;
+    }
+    return prev;
+}
+
+//r reverse will use k reverse to reverse every k elements
+Node* r_reverse(Node* head,int k){
+    
+    if(head==NULL || k==0){
+        cout<<"Not applicable"<<endl;
+        return NULL;
+    }
+
+
+
+    int cnt=0;
+    Node* temp=head;    //pointing the head
+    while(cnt<k){       //this iteration is done to find the tail
+        
+        if(temp==NULL){         //specifically made to counter last set of elements.
+            return k_reverse(head,k);
+        }
+        temp=temp->next;
+        cnt++;
+    }
+    Node *next=temp;    //storing the next element
+
+    Node* tail=head;    //the tail of updated LL will be the head of old LL
+    Node* ans_head=k_reverse(head,k);   //reversing the LL
+
+
+
+    tail->next=r_reverse(next,k);   //pointing the upadted tail to next group of k updated elements ( using recursion)
+    return ans_head;
+}
+int main(){
+    Node* h1=takeinput();
+    print(h1);
+    int k=2;
+    Node* h2=r_reverse(h1,k);
+    print(h2);
+}

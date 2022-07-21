@@ -1,0 +1,22 @@
+long long maxSubarraySum(int arr[], int n){
+        
+        // Your code here
+        long long maxSum=INT_MIN;   //initialzing to least negetive value and updating accordingly
+        long long curSum=0;     //current sum to keep a check!
+        
+        for(int i=0;i<n;i++){
+            curSum+=arr[i];
+            if(maxSum<curSum){      //if curSum is greater than maxSum , update it.
+                maxSum=curSum;
+            }
+            if(curSum<arr[i]){  //specially for negetive elements, that is if single element is greater than curSum , update the curSum and maxSum. 
+                curSum=arr[i];      //for increasing elements the arr[i] is already being added so it won't fickle for this cases of increasing positive elements.
+                if(arr[i]>maxSum){
+                    maxSum=arr[i];
+                }
+            }
+        }
+        
+        return maxSum;
+        
+    }

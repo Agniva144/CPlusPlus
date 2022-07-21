@@ -1,0 +1,132 @@
+#include<iostream>
+using namespace std;
+
+class Node_DL{
+    public:
+        int data;
+        Node_DL* next;
+        Node_DL* prev;
+        
+        Node_DL(int data){
+            this->data=data;
+            this->next=this->prev=NULL;
+        }
+};
+
+class pair_ans{
+    public:
+        Node_DL* head;
+        Node_DL* tail;
+};
+
+void print_linear(Node_DL* head){
+    Node_DL* temp=head;
+    while(temp!=NULL){
+        cout<<temp->data<<" ";
+        temp=temp->next;//imp
+    }
+    cout<<endl;
+}
+
+Node_DL* insert_End(Node_DL* head,Node_DL* tail,int data){
+    if(tail==NULL){
+        Node_DL* newNode=new Node_DL(data);
+        head=newNode;
+        return head;
+    }
+    Node_DL* new_Node=new Node_DL(data);
+    tail->next=new_Node;
+    new_Node->prev=tail;
+
+    tail=tail->next;
+
+    return head;
+}
+
+Node_DL* insert_First(Node_DL* head,Node_DL* tail,int data){
+    if(head==NULL){
+        Node_DL* newNode=new Node_DL(data);
+        head=newNode;
+        return head;
+    }
+    Node_DL* newNode=new Node_DL(data);
+    newNode->next=head;
+    head->prev=newNode;
+
+    head=head->prev;
+    return head;
+}
+
+
+
+void print_reversed(Node_DL* tail){
+    Node_DL* temp=tail;
+    while(temp!=NULL){
+        cout<<temp->data<<" ";
+        temp=temp->prev;//imp
+    }
+    cout<<endl;
+}
+
+pair_ans takeinput(){
+
+    int data;
+    cin>>data;
+
+    Node_DL* head=NULL;
+    Node_DL* tail=NULL;
+
+    while(data!=-1){
+        Node_DL* new_Node=new Node_DL(data);
+        if(head==NULL){
+            head=new_Node;
+            tail=new_Node;
+        }
+        else{
+            new_Node->prev=tail;
+            tail->next=new_Node;
+
+            tail=tail->next;
+        }
+        cin>>data;
+    }
+
+    pair_ans ans;
+    ans.head=head;
+    ans.tail=tail;
+    return ans;
+
+}
+
+Node_DL* insert_at_posn(Node_DL* head,Node_DL* tail,int posn,int data){
+    Node_DL* newNode=new Node_DL(data);
+    Node_DL* temp=head;
+    int cnt=0;
+    while(cnt<posn){
+        temp=temp->next;
+        cnt++;
+    }
+
+    newNode->next=temp->next;
+    temp->next=newNode;
+
+    return head;
+
+}
+
+//delete node
+
+int main(){
+
+    pair_ans h1;//storing the head and tail in pair
+    h1=takeinput();
+    print_linear(h1.head);
+
+    h1.head=insert_End(h1.head,h1.tail,90);
+    h1.head=insert_First(h1.head,h1.tail,90);
+    h1.head=insert_at_posn(h1.head,h1.tail,2,90);
+
+    print_linear(h1.head);
+
+    
+}

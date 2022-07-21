@@ -1,0 +1,299 @@
+#include<iostream>
+#include<queue>
+#include "Tree_Node.h"
+using namespace std;
+
+class Pair{
+    public:
+    TreeNode<int> *node;
+    int sum;
+};
+
+TreeNode<int>* takeinputLevelWise(){
+    int rootData;
+    cout<<"Enter the root data "<<endl;
+    cin>>rootData;
+
+    TreeNode<int>* root=new TreeNode<int>(rootData);    //creating the root node.
+
+    queue<TreeNode<int>*> pendingNodes;  //creating a queue for pending nodes.
+    pendingNodes.push(root); //pushing the root into the queue.
+
+    while(pendingNodes.size()!=0){       //until and unless the queue is getting empty.
+        TreeNode<int>* front=pendingNodes.front();       //get the front element from the queue.
+        pendingNodes.pop(); //poping the front node
+        cout<<"Enter num of children of "<<front->val<<endl;    //child of front node
+        int numChild;
+        cin>>numChild;  //take input of child of frontNode
+        for(int i=0;i<numChild;i++){    //loop to take the children of a node and connecting also pushing into the queue
+            int childData;
+            cout<<"Enter "<<i<<"th of child of "<<front->val<<endl;
+            cin>>childData;
+            TreeNode<int>* child=new TreeNode<int>(childData);  //creating the node for the child
+            front->children.push_back(child);//connecting the child with the parent.
+            pendingNodes.push(child);    //pushing the node into the queue
+        }
+    }
+    return root;    //returning the parent node.
+}
+
+TreeNode<int>* takeinput(){
+     int rootData;
+     cout<<"Enter Data-> "<<endl;
+     cin>>rootData;
+
+    TreeNode<int> *root=new TreeNode<int>(rootData);
+
+    int n;      //number of children of root 
+    cout<<"Enter num of number of children "<<rootData<<endl;
+    cin>>n;
+
+    for(int i=0;i<n;i++){
+        TreeNode<int> *child=takeinput();   //CREATING CHILDREN
+        root->children.push_back(child);    //conncecting to the parent.
+    }
+
+    return root;
+}
+
+void printTree_worse(TreeNode<int>* root){        //will just print , not give proper information
+    cout<<root->val<<endl;
+    for(int i=0;i<root->children.size();i++){
+        printTree_worse(root->children[i]);
+    }
+}
+
+void printLevelWise(TreeNode<int>* root){
+
+    if(root==NULL){
+        return;
+    }
+
+    queue<TreeNode<int>*> pendingNodes; //creating the queue.
+    pendingNodes.push(root); 
+
+    while(pendingNodes.size()!=0){
+
+        TreeNode<int>* front=pendingNodes.front();  //saving the front node into the front node.
+        pendingNodes.pop();
+
+        cout<<front->val<<": ";
+        for(int i=0;i<front->children.size();i++){
+            cout<<front->children[i]->val<<", ";    //printing out the value
+            pendingNodes.push(front->children[i]);  //pushing the node into the queue
+        }
+        cout<<endl;
+    }
+}
+
+void printTree(TreeNode<int>* root){    //generic tree doesn't require base case;
+
+    if(root==NULL){     //it's not a base case it's just a edge case.
+        return ;
+    }
+    
+
+    //printing the children!
+    cout<<root->val<<" :";
+    for(int i=0;i<root->children.size();i++){
+        cout<<root->children[i]->val<<" ,";
+    }cout<<endl;
+
+    //calling recursion to the children node
+    for(int i=0;i<root->children.size();i++){
+        printTree(root->children[i]);
+    }
+}
+
+int numNodes(TreeNode<int>* root){
+    if(root==NULL){
+        return 0;
+    }
+    int ans=1;
+    
+    for(int i=0;i<root->children.size();i++){
+        ans+=numNodes(root->children[i]);
+    }
+    return ans;
+}
+
+int sumNodes(TreeNode<int>* root){
+    if(root==NULL){
+        return 0;
+    }
+    int ans=root->val;
+    
+    for(int i=0;i<root->children.size();i++){
+        ans+=sumNodes(root->children[i]);
+    }
+    return ans;
+}
+
+int largestNode(TreeNode<int>* root){
+    int ans=root->val;
+    int temp_ans=0;
+    int temp_children;
+    for(int i=0;i<root->children.size();i++){
+
+        if(root->children[i]->val>temp_ans){    //comparing children within themselves
+            temp_ans=root->children[i]->val;
+        }
+        temp_children=largestNode(root->children[i]); //getting answer from recursion about the maximum from children.
+        
+        if(temp_children>temp_ans){  // sending the max answer from the for loop and then comparing it with value of root
+            temp_ans=temp_children;
+        } 
+    }
+    if(root->val<temp_ans){
+        ans=temp_ans;
+    }
+    return ans;
+}
+
+int height(TreeNode<int> *root){
+    if(root==NULL){
+        return 0;
+    }
+
+    int ans=0;
+    for(int i=0;i<root->children.size();i++){
+        int temp_ans=height(root->children[i]);
+        if(temp_ans>ans){
+            ans=temp_ans;
+        }
+    }
+    return 1+ans;
+}
+
+void printAtLevelK(TreeNode<int> *root,int k){
+    if(root==NULL){
+        return ;
+    }
+
+    if(k==0){
+        cout<<root->val<<endl;
+        return ;
+    }
+
+    for(int i=0;i<root->children.size();i++){
+        printAtLevelK(root->children[i],k-1);
+    }
+}
+
+int countLeafNodes(TreeNode<int> *root){
+    if(root->children.size()==0){
+        return 1;
+    }
+
+    int ans=0;
+    for(int i=0;i<root->children.size();i++){
+        int temp_ans=countLeafNodes(root->children[i]);
+        ans+=temp_ans;
+    }
+
+    return ans;
+}
+
+void PreOrder(TreeNode<int> *root){
+    if(root==NULL){
+        return;
+    }
+    cout<<root->val<<" ";
+    for(int i=0;i<root->children.size();i++){
+        PreOrder(root->children[i]);
+    }
+}
+
+void deleteTree(TreeNode<int> *root){       //Using Post_Order traversal
+    for(int i=0;i<root->children.size();i++){
+        delete(root->children[i]);
+    }
+    delete root;
+}
+
+int NodeWithMaxChild(TreeNode<int> *root){
+    // if(root==NULL){
+    //     return ;
+    // }
+
+    int ans_sum=root->val;
+
+    int temp_ans=0;
+    for(int i=0;i<root->children.size();i++){
+        int child_sum=NodeWithMaxChild(root->children[i]);
+        ans_sum+=root->children[i]->val;    
+        if(child_sum>temp_ans){
+            temp_ans=child_sum;
+        }
+    }
+
+    if(temp_ans>ans_sum){
+        return temp_ans;
+    }else{
+        return ans_sum;
+    }
+
+}
+
+int nextLarger(TreeNode<int> *root,int num){
+    //edge case
+    if(root==NULL){
+        return 0;
+    }
+
+    //leaf node case
+    if(root->children.size()==0){
+        if(root->val>num){
+            return root->val;
+        }else{
+            return INT_MAX;
+        }
+    }
+    
+    //main case
+    int final_ans;
+    if(root->val>num){
+        final_ans=root->val;
+    }else{
+        final_ans=INT_MAX;
+    }
+    for(int i=0;i<root->children.size();i++){
+        int temp_ans=nextLarger(root->children[i],num);
+        if(temp_ans<final_ans){
+            final_ans=temp_ans;
+        }
+    }
+    return final_ans;
+}
+
+int main(){
+    /*
+    TreeNode<int> *root=new TreeNode<int>(1);
+    TreeNode<int> *node1=new TreeNode<int>(2);
+    TreeNode<int> *node2=new TreeNode<int>(3);
+
+    root->children.push_back(node1);
+    root->children.push_back(node2);
+    */
+   TreeNode<int>* root=takeinputLevelWise();
+    printLevelWise(root);
+
+    /*
+    printTree(root);
+    cout<<"Total number of nodes :"<<numNodes(root)<<endl;
+    cout<<"Total number of nodes :"<<largestNode(root)<<endl;
+    cout<<"Height number of nodes :"<<height(root)<<endl;
+
+    printAtLevelK(root,1);
+    
+    cout<<"Number of leaf nodes :"<<countLeafNodes(root)<<endl;  
+    cout<<"Number of leaf nodes :";
+    PreOrder(root); 
+
+    cout<<endl<<"Node with max child : "<<NodeWithMaxChild(root)<<endl;
+    */
+   cout<<nextLarger(root,5)<<endl;
+
+    delete root;
+
+}

@@ -1,0 +1,55 @@
+// C++ program to demonstrate the use of class templates
+
+#include <iostream>
+using namespace std;
+
+// Class template
+template <typename T,typename V>
+class Number {
+   private:
+    // Variable of type T
+    T x;
+    V y;
+
+   public:
+    // Number(T n) : num(n) {}   // constructor
+    void setNumx(T a){
+        this->x=a;
+    }
+
+    T getNumx() {
+        return this->x;
+    }
+
+    void setNumY(V y){
+        this->y=y;
+    }
+
+    V getNumY(){
+        return this->y;
+    }
+};
+
+int main() {
+
+    //creating doublet
+    // create object with int type
+    Number<int,double> n1;
+    n1.setNumx(90);
+    n1.setNumY(80.369);
+    cout<<n1.getNumx()<<" "<<n1.getNumY()<<endl;
+
+
+    //creating triplet using a doublet
+    Number<int,int> p2;
+    p2.setNumx(88);
+    p2.setNumY(89);
+
+
+    Number<Number<int,int>,int> p1;
+    p1.setNumY(90);
+    p1.setNumx(p2);
+
+    cout<<p1.getNumY()<<" "<<p1.getNumx().getNumx()<<" "<<p1.getNumx().getNumY()<<endl;
+    return 0;
+}

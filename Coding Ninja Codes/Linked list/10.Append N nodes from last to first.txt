@@ -1,0 +1,87 @@
+#include<iostream>
+using namespace std;
+
+class Node{
+    public:
+        int data;
+        Node* next;
+    Node(int data){
+        this->data=data;
+        this->next=NULL;
+    }
+};
+
+Node* takeinput(){
+    int data;
+    cin>>data;
+
+    Node* head=NULL;
+    Node* tail=NULL;
+    while(data!=-1){
+        Node* newNode=new Node(data);
+        if(head==NULL){
+            head=newNode;
+            tail=newNode;
+        }
+        else{
+            tail->next=newNode;
+            tail=tail->next;
+        }
+        cin>>data;
+    }
+    return head;
+}
+
+void print(Node* head){
+    if(head==NULL){
+        return;
+    }
+    Node* temp=head;
+    while(temp!=NULL){
+        cout<<temp->data<<" ";
+        temp=temp->next;
+    }
+    cout<<endl;
+}
+
+int count(Node* head){
+    if(head==NULL){
+        return 0;
+    }
+    int cnt=0;
+    Node* temp=head;
+    while(temp!=NULL){
+        temp=temp->next;
+        cnt++;
+    }
+    return cnt;
+}
+
+Node* append_last_n_node(Node* head,int n,int cnt){
+    Node* temp=head;
+    int i=0;
+    while(i<cnt-n-1){   //reaching the penultimate node of breakage
+        temp=temp->next;
+        i++;
+    }
+
+    //pointing the new head and traversing till the end and then linking it to head
+    Node* temp_head=temp->next;
+    Node* ans_temp=temp_head;
+    temp->next=NULL;
+    while(temp_head->next!=NULL){
+        temp_head=temp_head->next;
+    }
+    temp_head->next=head;
+    return ans_temp;
+}
+
+int main(){
+
+    Node* h1=takeinput();
+    print(h1);
+    int cnt=count(h1);
+    cout<<cnt<<endl;
+    h1=append_last_n_node(h1,3,cnt);
+    print(h1);
+}

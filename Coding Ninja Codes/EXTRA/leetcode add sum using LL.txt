@@ -1,0 +1,66 @@
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode() : val(0), next(nullptr) {}
+ *     ListNode(int x) : val(x), next(nullptr) {}
+ *     ListNode(int x, ListNode *next) : val(x), next(next) {}
+ * };
+ */
+class Solution {
+public:
+    ListNode* addTwoNumbers(ListNode* l1, ListNode* l2) {
+        //storing in stack
+        stack<int> s;
+        int cnt1=1;
+        while(l1!=NULL){
+            s.push(l1->data);
+            l1=l1->next;
+            cnt1++;
+        }
+        
+        stack<int> s2;
+        int cnt2=0;
+        while(l2!=NULL){
+            s2.push(l2->data);
+            l2=l2->next;
+            cnt2++;
+        }
+        
+        //extracting the number
+        int num1=1;
+        for(int i=cnt1;i>0;i--){
+            num1*=s.top()*power(10,i-1);
+            s.pop();
+        }
+        
+        int num2=1;
+        for(int i=cnt2;i>0;i--){
+            num2*=s2.top()*power(10,i-1);
+            s2.pop();
+        }
+        
+        
+        int result=num1+num2;
+        stack<int> s3;
+        while(result>0){
+            int temp=result%10;
+            s3.push(temp);
+            result/=10;
+        }
+        
+        ListNode* l3;
+        ListNode* temp;
+        l3=temp;
+        while(!s3.empty()){
+            ListNode* next;
+            next->data=s3.top();
+            temp->next=next;
+            s3.pop();
+            
+        }
+        
+        return l3;
+    }
+};
