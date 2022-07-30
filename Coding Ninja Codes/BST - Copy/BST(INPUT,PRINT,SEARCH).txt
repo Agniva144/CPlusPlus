@@ -227,6 +227,54 @@ BinaryTreeNode<int>* ConstructBST(int arr[],int si,int ei){
 //     cout<<endl;
 // }
 
+/BST TO LL (Sorted)
+class Node{
+    public:
+    int data;
+    Node* next;
+    
+    Node(int data){
+        this->data=data;
+        this->next=NULL;
+    }
+};
+
+Node* BstToLL(BinaryTreeNode<int>* root){
+    // BinaryTreeNode<int>* root=new BinaryTreeNode<int>(root->data);
+    
+    if(root->left==NULL){
+        Node* n=new Node(root->data);
+        return n;
+    }
+    
+    Node* left=BstToLL(root->left);
+    Node* right=BstToLL(root->right);
+    
+    Node* n=new Node(root->data);
+    
+    Node* temp=left;
+    while(temp->next!=NULL){
+        temp=temp->next;
+    }
+    
+    temp->next=n;
+    n->next=right;
+    
+    return left;
+}
+
+void printLL(Node* head){
+    Node* temp=head;
+    while(temp!=NULL){
+        cout<<temp->data<<" ";
+        temp=temp->next;
+    }
+}
+
+//
+
+
+
 int main(){
     // BinaryTreeNode<int>* root=takeinputLevelWise();
     int arr[]={1,2,3,4,5,6,7};
@@ -239,4 +287,12 @@ int main(){
     print(arr);
     PrintLevelWise(root);
     // cout<<isBST(root)<<endl;
+    
+     /*
+    BinaryTreeNode<int>* root=takeinputLevelWise();
+    printElementLevelWise(root);
+    Node* n1=BstToLL(root);
+    printLL(n1);
+    */
+    
 }
