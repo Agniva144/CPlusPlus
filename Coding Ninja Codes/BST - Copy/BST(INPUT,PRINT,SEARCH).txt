@@ -227,7 +227,7 @@ BinaryTreeNode<int>* ConstructBST(int arr[],int si,int ei){
 //     cout<<endl;
 // }
 
-/BST TO LL (Sorted)
+//BST TO LL (Sorted)
 class Node{
     public:
     int data;
