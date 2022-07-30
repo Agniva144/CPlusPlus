@@ -1,0 +1,162 @@
+#include<bits/stdc++.h>
+using namespace std;
+
+class Node{
+    public:
+    int data;
+    Node* next;
+    
+    Node(int data){
+        this->data=data;
+        this->next=NULL;
+    }
+};
+
+template<typename T>
+class BinaryTreeNode{
+    public:
+    T data;
+    BinaryTreeNode* left;
+    BinaryTreeNode* right;
+    
+    BinaryTreeNode(T data){
+        this->data=data;
+        this->left=NULL;
+        this->right=NULL;
+    }
+    
+    ~BinaryTreeNode(){
+        delete left;
+        delete right;
+    }
+};
+
+BinaryTreeNode<int>* takeinputLevelWise(){
+    int rootData;
+    cout<<"Enter the rootData"<<endl;
+    cin>>rootData;
+    if(rootData==-1){
+        return NULL;
+    }
+    
+    BinaryTreeNode<int> *root=new BinaryTreeNode<int>(rootData);
+    
+    queue<BinaryTreeNode<int>* > pendingNodes;
+    pendingNodes.push(root);
+    
+    while(pendingNodes.size()!=0){
+        BinaryTreeNode<int>* front=pendingNodes.front();
+        pendingNodes.pop();
+        
+        cout<<"Enter the left child "<<front->data<<endl;
+        int leftChild;
+        cin>>leftChild;
+        if(leftChild!=-1){
+            BinaryTreeNode<int> *child=new BinaryTreeNode<int>(leftChild);
+            front->left=child;
+            pendingNodes.push(child);
+        }
+        
+        cout<<"Enter the right child "<<front->data<<endl;
+        int rightChild;
+        cin>>rightChild;
+        if(rightChild!=-1){
+            BinaryTreeNode<int>* child=new BinaryTreeNode<int>(rightChild);
+            front->right=child;
+            pendingNodes.push(child);
+        }
+    }
+    return root;
+}
+
+BinaryTreeNode<int>* ConstructBST(int arr[],int si,int ei){
+    int mid=(si+ei)/2;
+    if(si>ei){
+        return NULL;
+    }
+    int mid_element=arr[mid];
+    BinaryTreeNode<int>* root=new BinaryTreeNode<int>(mid_element);
+    BinaryTreeNode<int>* left=ConstructBST(arr,si,mid-1);
+    BinaryTreeNode<int>* right=ConstructBST(arr,mid+1,ei);
+    
+    root->left=left;
+    root->right=right;
+    
+    return root;
+} 
+
+void printElementLevelWise(BinaryTreeNode<int>* root){
+    queue<BinaryTreeNode<int>* > pendingNodes;
+    pendingNodes.push(root);
+    
+    while(pendingNodes.size()!=0){
+        BinaryTreeNode<int>* front=pendingNodes.front();
+        pendingNodes.pop();
+        cout<<front->data<<": ";
+        
+        if(front->left!=NULL){
+            cout<<"L-> ";
+            cout<<front->left->data;
+            pendingNodes.push(front->left);
+        }
+        
+        if(front->right!=NULL){
+            cout<<",R ->";
+            cout<<front->right->data;
+            pendingNodes.push(front->right);
+        }
+        cout<<endl;
+    }
+}
+
+Node* BstToLL(BinaryTreeNode<int>* root){
+    // BinaryTreeNode<int>* root=new BinaryTreeNode<int>(root->data);
+    
+    if(root->left==NULL){
+        Node* n=new Node(root->data);
+        return n;
+    }
+    
+    Node* left=BstToLL(root->left);
+    Node* right=BstToLL(root->right);
+    
+    Node* n=new Node(root->data);
+    
+    Node* temp=left;
+    while(temp->next!=NULL){
+        temp=temp->next;
+    }
+    
+    temp->next=n;
+    n->next=right;
+    
+    return left;
+}
+
+void printLL(Node* head){
+    Node* temp=head;
+    while(temp!=NULL){
+        cout<<temp->data<<" ";
+        temp=temp->next;
+    }
+}
+
+
+
+int main(){
+    cout<<"OUTPUT"<<endl;
+    
+    /*
+    int arr[]={1,2,3,4,5,6,7};
+    BinaryTreeNode<int>* root=ConstructBST(arr,0,6);
+    printElementLevelWise(root);
+    */
+    
+    // Node* n1= new Node(1);
+    // cout<<n1->data<<endl;
+    BinaryTreeNode<int>* root=takeinputLevelWise();
+    printElementLevelWise(root);
+    Node* n1=BstToLL(root);
+    printLL(n1);
+    
+}
