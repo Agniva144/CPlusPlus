@@ -4,6 +4,149 @@
 #include "BinaryTreeNode.h"
 using namespace std;
 
+class BST{
+    BinaryTreeNode<int>* root;
+    
+    public:
+    BST(){
+        root=NULL;
+    }
+    
+    ~BST(){
+        delete root;
+    }
+    
+    private:
+    BinaryTreeNode<int>* deleteData(int data,BinaryTreeNode<int>* node){
+        if(node==NULL){
+            return NULL;
+        }
+        
+        if(data>node->data){    //greater
+            node->right=deleteData(data,node->right);
+            return node;
+        }else if(data<node->data){  //smaller
+            node->left=deleteData(data,node->left);
+            return node;
+        }else{
+            if(node->left==NULL && node->right==NULL){  //leaf node
+                delete node;
+                return NULL;
+            }
+            else if(node->left==NULL){      //left side null
+                BinaryTreeNode<int>* temp=node->right;  //storing the next right of node
+                node->right=NULL;           //breaking the link
+                delete node;                //now deleting the node
+                return temp;
+            }
+            else if(node->right==NULL){     //right side null
+                BinaryTreeNode<int>* temp=node->left;   //storing the next left of the node
+                node->left=NULL;        //breaking the link
+                delete node;            //deleting the node
+                return temp;
+            }
+            else{                           //having two subtree(not NULL)
+                BinaryTreeNode<int>* minNode=node->right;
+                while(minNode!=NULL){
+                    minNode=minNode->left;
+                }
+                
+                int rightMin=minNode->data;
+                node->data=rightMin;
+                node->right=deleteData(rightMin,node->right);
+                return node;
+                
+            }
+        }
+    }
+    
+    public:
+    void deleteData(int data){
+        root=deleteData(data,root);
+    }
+    
+    
+    
+    void printElementLevelWise(BinaryTreeNode<int>* root){
+    queue<BinaryTreeNode<int>* > pendingNodes;
+    pendingNodes.push(root);
+    
+    while(pendingNodes.size()!=0){
+        BinaryTreeNode<int>* front=pendingNodes.front();
+        pendingNodes.pop();
+        cout<<front->data<<": ";
+        
+        if(front->left!=NULL){
+            cout<<"L-> ";
+            cout<<front->left->data;
+            pendingNodes.push(front->left);
+        }
+        
+        if(front->right!=NULL){
+            cout<<",R ->";
+            cout<<front->right->data;
+            pendingNodes.push(front->right);
+        }
+        cout<<endl;
+    }
+}
+
+    
+    public:
+    
+    void printTree(){
+        printElementLevelWise(root);
+    }
+    
+    private:
+    BinaryTreeNode<int>* insert(int data,BinaryTreeNode<int>* node){
+        if(node==NULL){
+            BinaryTreeNode<int>* newNode=new BinaryTreeNode<int>(data);
+            return newNode;
+        }
+        
+        if(data<node->data){
+            node->left=insert(data,node->left);
+        }else{
+            node->right=insert(data,node->right);
+        }
+        return node;
+    }
+    
+    public:
+    void insert(int data){
+        this->root=insert(data,this->root);
+    }
+    
+    
+    
+    private:
+    bool hasData(int data,BinaryTreeNode<int>* node){
+        if(node==NULL){
+            return false;
+        }
+        if(node->data==data){
+            return true;
+        }
+        else if(data<node->data){
+            return hasData(data,node->left);
+        } 
+        else{
+            return hasData(data,node->right);
+        }
+    }
+     
+    
+    public:
+    
+    bool hasData(int data){
+        return hasData(data,root);
+    }
+    
+    
+    
+};
+
 BinaryTreeNode<int> *takeinputLevelWise()   //be careful for BST input (root matters)
 {
     int rootData;
@@ -82,6 +225,7 @@ void PrintLevelWise(BinaryTreeNode<int> *root)
         cout << endl;
     }
 }
+
 
 
 BinaryTreeNode<int>* searchBST(BinaryTreeNode<int>* root,int key){
