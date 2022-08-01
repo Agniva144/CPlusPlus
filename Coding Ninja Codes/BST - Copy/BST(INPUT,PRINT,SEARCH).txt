@@ -446,6 +446,22 @@ vector<int>* getRootToNodePath(BinaryTreeNode<int>* root,int data){
     
 }
 
+void doubleTree(BinaryTreeNode<int>* node){
+    if(node==NULL){
+        return ;
+    }
+    
+    doubleTree(node->left);
+    doubleTree(node->right);
+    
+    BinaryTreeNode<int>* oldLeft=node->left;
+    BinaryTreeNode<int>* newNode=new BinaryTreeNode<int>(node->data);
+    
+    node->left=newNode;
+    newNode->left=oldLeft;
+    
+}
+
 
 
 
